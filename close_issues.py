@@ -1,6 +1,6 @@
 # Monday evening, move all issues from Scheduled to Closed
 from biocypher import BioCypher
-from scheduling.adapters.adapter import (
+from scheduling.adapters.github_adapter import (
     GitHubAdapter,
     GitHubAdapterNodeType,
     GitHubAdapterEdgeType,
@@ -52,9 +52,9 @@ def main():
         lines = f.readlines()
         for i, line in enumerate(lines):
             if line.startswith("## Current Schedule"):
-                lines[
-                    i + 1
-                ] = "Next week's schedule will be posted on Tuesday at noon.\n"
+                lines[i + 1] = (
+                    "Next week's schedule will be posted on Tuesday at noon.\n"
+                )
                 # delete all lines after i+1
                 lines = lines[: i + 2]
                 break

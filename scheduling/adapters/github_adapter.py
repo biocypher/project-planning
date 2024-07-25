@@ -1,5 +1,4 @@
 import requests
-import gzip
 import json
 import os
 from enum import Enum, auto

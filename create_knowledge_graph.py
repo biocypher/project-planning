@@ -1,5 +1,5 @@
 from biocypher import BioCypher
-from scheduling.adapters.adapter import (
+from scheduling.adapters.github_adapter import (
     GitHubAdapter,
     GitHubAdapterNodeType,
     GitHubAdapterEdgeType,
