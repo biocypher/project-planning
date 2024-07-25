@@ -1,37 +1,15 @@
 from biocypher import BioCypher
-from scheduling.adapters.github_adapter import (
-    GitHubAdapter,
-    GitHubAdapterNodeType,
-    GitHubAdapterEdgeType,
-    GitHubAdapterIssueField,
-)
+from scheduling.adapters.github_adapter import GitHubAdapter
 import pandas as pd
 
 pd.set_option("display.max_columns", None)
+pd.set_option("display.max_rows", None)
 
 
 def main():
     bc = BioCypher()
 
-    node_types = [
-        GitHubAdapterNodeType.ISSUE,
-    ]
-
-    node_fields = [
-        GitHubAdapterIssueField.NUMBER,
-        GitHubAdapterIssueField.TITLE,
-        GitHubAdapterIssueField.BODY,
-    ]
-
-    edge_types = [
-        GitHubAdapterEdgeType.PART_OF,
-    ]
-
-    adapter = GitHubAdapter(
-        node_types=node_types,
-        node_fields=node_fields,
-        edge_types=edge_types,
-    )
+    adapter = GitHubAdapter()
 
     bc.add_nodes(adapter.get_nodes())
     bc.add_edges(adapter.get_edges())

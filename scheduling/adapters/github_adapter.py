@@ -13,17 +13,25 @@ class GitHubAdapterNodeType(Enum):
     Define types of nodes the adapter can provide.
     """
 
-    ISSUE = auto()
+    PERSON = "person"
+    PROJECT = "project"
+    ITERATION = "iteration"
 
 
-class GitHubAdapterIssueField(Enum):
+class GitHubAdapterProjectField(Enum):
     """
     Define possible fields the adapter can provide.
     """
 
-    NUMBER = "number"
     TITLE = "title"
-    BODY = "body"
+    DESCRIPTION = "description"
+    LABELS = "labels"
+    STATUS = "status"
+    SIZE = "size"
+    PRIORITY = "priority"
+    ITERATION = "iteration"
+    ASSIGNEES = "assignees"
+    ISSUE = "issue"
 
 
 class GitHubAdapterEdgeType(Enum):
@@ -31,7 +39,8 @@ class GitHubAdapterEdgeType(Enum):
     Enum for the types of the adapter.
     """
 
-    PART_OF = "part_of"
+    LEADS = "leads"
+    PART_OF = "part of"
 
 
 class GitHubAdapter:
@@ -710,7 +719,7 @@ class GitHubAdapter:
             self.node_fields = [
                 field
                 for field in chain(
-                    GitHubAdapterIssueField,
+                    GitHubAdapterProjectField,
                 )
             ]
 
