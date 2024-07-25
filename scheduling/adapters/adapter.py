@@ -240,8 +240,8 @@ class GitHubAdapter:
     def _get_project_id(self, url: str, headers: dict) -> str:
         query = """
                 query{
-                    organization(login: "saezlab"){
-                        projectV2(number: 18) {
+                    organization(login: "biocypher"){
+                        projectV2(number: 6) {
                             id
                         }
                     }
