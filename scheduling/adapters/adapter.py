@@ -282,6 +282,16 @@ class GitHubAdapter:
                                             name
                                         }
                                     }
+                                    ... on ProjectV2IterationField {
+                                      id
+                                      name
+                                      configuration {
+                                        iterations {
+                                          startDate
+                                          id
+                                        }
+                                      }
+                                    }
                                 }
                             }
                         }
@@ -324,6 +334,10 @@ class GitHubAdapter:
                                     name
                                   }
                                 }
+                              }
+                              ... on ProjectV2ItemFieldIterationValue {
+                                title
+                                iterationId
                               }
                               ... on ProjectV2ItemFieldDateValue {
                                 date
@@ -406,6 +420,10 @@ class GitHubAdapter:
                                                 name
                                               }
                                             }
+                                          }
+                                          ... on ProjectV2ItemFieldIterationValue {
+                                            title
+                                            iterationId
                                           }
                                           ... on ProjectV2ItemFieldDateValue {
                                             date
@@ -521,9 +539,13 @@ class GitHubAdapter:
             ]
 
             for field in fields:
-                field_type = field["field"]["name"]
-                field_value = field.get("text") or field.get("name")
-                value[field_type] = field_value
+                if field.get("iterationId"):
+                    field_type = "Iteration"
+                    value["Iteration"] = field["title"]
+                    value["Iteration ID"] = field["iterationId"]
+                else:
+                    field_type = field["field"]["name"]
+                    value[field_type] = field.get("text") or field.get("name")
 
             # add labels to item
             labels = [
@@ -567,11 +589,28 @@ class GitHubAdapter:
                         "status": value.get("Status"),
                         "size": value.get("Size"),
                         "priority": value.get("Priority"),
+                        "iteration": value.get("Iteration"),
                         "assignees": assignees,
                         "issue": key,
                     },
                 )
             )
+
+            # Create Iteration node
+            if value.get("Iteration"):
+                iteration_id = value.get("Iteration ID")
+                if iteration_id in [node[0] for node in self._nodes]:
+                    continue
+
+                self._nodes.append(
+                    (
+                        iteration_id,
+                        "iteration",
+                        {
+                            "title": value.get("Iteration"),
+                        },
+                    )
+                )
 
         # Edges to fields
         for key, value in self._items.items():

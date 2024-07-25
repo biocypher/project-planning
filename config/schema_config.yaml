@@ -10,6 +10,11 @@ project:
   represented_as: node
   input_label: project
 
+iteration:
+  is_a: event
+  represented_as: node
+  input_label: iteration
+
 leads:
   is_a: association
   represented_as: edge
