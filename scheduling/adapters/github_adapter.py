@@ -36,7 +36,7 @@ class GitHubAdapterProjectField(Enum):
 
 class GitHubAdapterEdgeType(Enum):
     """
-    Enum for the types of the adapter.
+    Enum for the edge types of the adapter.
     """
 
     LEADS = "leads"
