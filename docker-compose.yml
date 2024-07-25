@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+
+  build:
+    image: docker.io/slobentanzer/biocypher-base:1.1.1
+    container_name: build
+    volumes:
+      - biocypher-meta-graph_data:/usr/app/data
+      - ./biocypher-log:/usr/app/biocypher-log
+      - .:/src/
+    environment:
+      BIOCYPHER_GITHUB_PROJECT_TOKEN: ${BIOCYPHER_GITHUB_PROJECT_TOKEN}
+    command:
+      - /bin/bash
+      - /src/scripts/build.sh
+
+volumes:
+  biocypher-meta-graph_data:
