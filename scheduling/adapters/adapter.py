@@ -19,7 +19,7 @@ class GitHubAdapterNodeType(Enum):
 
 class GitHubAdapterIssueField(Enum):
     """
-    Define possible fields the adapter can provide for proteins.
+    Define possible fields the adapter can provide.
     """
 
     NUMBER = "number"
@@ -29,7 +29,7 @@ class GitHubAdapterIssueField(Enum):
 
 class GitHubAdapterEdgeType(Enum):
     """
-    Enum for the types of the protein adapter.
+    Enum for the types of the adapter.
     """
 
     PART_OF = "part_of"
@@ -248,18 +248,19 @@ class GitHubAdapter:
                 }
                 """
 
-        # Set the request data as a dictionary
-        data = {"query": query}
-
         # Send the API request
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json={"query": query})
 
-        # Parse the response JSON
-        response_json = json.loads(response.text)
-
-        # Extract the data from the response JSON
-        data = response_json.get("data")
-        return data.get("organization").get("projectV2").get("id")
+        if response.status_code == 200:
+            response_data = response.json()
+            # Check for errors in the response data
+            if "errors" in response_data:
+                print("Errors in the response:", response_data["errors"])
+            else:
+                project_id = response_data["data"]["organization"]["projectV2"]["id"]
+                return project_id
+        else:
+            print("Failed to fetch project ID, status code:", response.status_code)
 
     def _get_project_fields(self, url: str, headers: dict, id_: str) -> dict:
         query = (
@@ -495,10 +496,12 @@ class GitHubAdapter:
 
         # Fields
         for field in self._fields:
+            if not field:
+                continue
             if field["name"] not in [
                 "Status",
-                "Duration",
-                "Timeslot",
+                "Size",
+                "Priority",
             ]:
                 continue
 
@@ -549,10 +552,9 @@ class GitHubAdapter:
                 logger.warning(f"Item {value['id']} has no title.")
                 continue
 
+            description = value.get("content").get("body", "")
+
             label = self._get_label()
-            duration = int(value.get("Duration", 30))
-            status = value.get("Status")
-            timeslot = value.get("Timeslot")
 
             self._nodes.append(
                 (
@@ -560,10 +562,11 @@ class GitHubAdapter:
                     label,
                     {
                         "title": title,
-                        "duration": duration,
-                        "timeslot": timeslot,
-                        "status": status,
+                        "description": description,
                         "labels": labels,
+                        "status": value.get("Status"),
+                        "size": value.get("Size"),
+                        "priority": value.get("Priority"),
                         "assignees": assignees,
                         "issue": key,
                     },
@@ -573,17 +576,18 @@ class GitHubAdapter:
         # Edges to fields
         for key, value in self._items.items():
             for assignee in value.get("assignees", []):
-                if assignee not in self._nodes:
+                # check if assignee is in the first element of the list of tuples that is self._nodes
+                if assignee not in [node[0] for node in self._nodes]:
                     self._nodes.append((assignee, "person", {}))
 
-                self._edges.append((None, assignee, value["id"], "attends", {}))
+                self._edges.append((None, assignee, value["id"], "leads", {}))
 
     def _get_label(self):
         """
-        Get the label for the node. Just returns club for now.
+        Get the label for the node. Just returns project for now.
         """
 
-        return "club"
+        return "project"
 
     def _process_edges(self):
         """
@@ -594,6 +598,7 @@ class GitHubAdapter:
         logger.info("Generating edges.")
 
         for value in self._items.values():
+            continue
             uses = self._extract_uses(value["content"]["body"])
 
             parent = "i" + str(value["content"]["number"])

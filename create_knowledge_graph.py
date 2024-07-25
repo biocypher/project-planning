@@ -8,9 +8,7 @@ from scheduling.adapters.adapter import (
     GitHubAdapterEdgeType,
     GitHubAdapterIssueField,
 )
-from datetime import datetime, timedelta
 import pandas as pd
-import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view as swv
 
 pd.set_option("display.max_columns", None)
