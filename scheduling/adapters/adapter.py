@@ -612,6 +612,18 @@ class GitHubAdapter:
                     )
                 )
 
+            # Create edges from item to iteration
+            if value.get("Iteration"):
+                self._edges.append(
+                    (
+                        None,
+                        value["id"],
+                        value.get("Iteration ID"),
+                        "part of",
+                        {},
+                    )
+                )
+
         # Edges to fields
         for key, value in self._items.items():
             for assignee in value.get("assignees", []):
