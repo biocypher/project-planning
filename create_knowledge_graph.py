@@ -1,6 +1,3 @@
-# Every Tueday at noon, calculate the schedule for the next week and update the
-# GitHub project accordingly.
-
 from biocypher import BioCypher
 from scheduling.adapters.adapter import (
     GitHubAdapter,
@@ -9,7 +6,6 @@ from scheduling.adapters.adapter import (
     GitHubAdapterIssueField,
 )
 import pandas as pd
-from numpy.lib.stride_tricks import sliding_window_view as swv
 
 pd.set_option("display.max_columns", None)
 
