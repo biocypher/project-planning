@@ -50,7 +50,7 @@ services:
         condition: service_completed_successfully
 
   app:
-    image: biocypher/biochatter-light:0.4.7
+    image: biocypher/biochatter-light:0.6.2
     container_name: app
     ports:
       - "8501:8501"
@@ -61,12 +61,18 @@ services:
         condition: service_completed_successfully
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - BIOCHATTER_LIGHT_TITLE="Project Planner"
+      - BIOCHATTER_LIGHT_HEADER="GitHub Project Planning Assistant"
+      - BIOCHATTER_LIGHT_SUBHEADER="A BioChatter Demonstration App for integrated project planning using LLMs"
       - DOCKER_COMPOSE=true
       - CHAT_TAB=false
       - PROMPT_ENGINEERING_TAB=false
       - RAG_TAB=false
       - CORRECTING_AGENT_TAB=false
-      - KNOWLEDGE_GRAPH_TAB=true
+      - KNOWLEDGE_GRAPH_TAB=false
+      - LAST_WEEKS_SUMMARY_TAB=true
+      - THIS_WEEKS_TASKS_TAB=true
+      - TASK_SETTINGS_PANEL_TAB=true
 
 volumes:
   biocypher_neo4j_volume:
