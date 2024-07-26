@@ -9,6 +9,16 @@ project:
   is_a: event
   represented_as: node
   input_label: project
+  properties:
+    title: str
+    description: str
+    labels: str[]
+    status: str
+    size: str
+    priority: str
+    iteration: str
+    assignees: str[]
+    issue: int
 
 iteration:
   is_a: event
