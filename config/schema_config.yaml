@@ -4,6 +4,8 @@ person:
   is_a: individual organism
   represented_as: node
   input_label: person
+  properties:
+    name: str
 
 project:
   is_a: event
@@ -29,8 +31,12 @@ leads:
   is_a: association
   represented_as: edge
   input_label: leads
+  source: person
+  target: project
 
 part of:
   is_a: association
   represented_as: edge
   input_label: part of
+  source: project
+  target: iteration

@@ -607,18 +607,16 @@ class GitHubAdapter:
             # Create Iteration node
             if value.get("Iteration"):
                 iteration_id = value.get("Iteration ID")
-                if iteration_id in [node[0] for node in self._nodes]:
-                    continue
-
-                self._nodes.append(
-                    (
-                        iteration_id,
-                        "iteration",
-                        {
-                            "title": value.get("Iteration"),
-                        },
+                if iteration_id not in [node[0] for node in self._nodes]:
+                    self._nodes.append(
+                        (
+                            iteration_id,
+                            "iteration",
+                            {
+                                "title": value.get("Iteration"),
+                            },
+                        )
                     )
-                )
 
             # Create edges from item to iteration
             if value.get("Iteration"):
@@ -637,7 +635,7 @@ class GitHubAdapter:
             for assignee in value.get("assignees", []):
                 # check if assignee is in the first element of the list of tuples that is self._nodes
                 if assignee not in [node[0] for node in self._nodes]:
-                    self._nodes.append((assignee, "person", {}))
+                    self._nodes.append((assignee, "person", {"name": assignee}))
 
                 self._edges.append((None, assignee, value["id"], "leads", {}))
 
