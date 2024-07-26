@@ -59,9 +59,9 @@ services:
         condition: service_completed_successfully
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - BIOCHATTER_LIGHT_TITLE="Project Planner"
-      - BIOCHATTER_LIGHT_HEADER="GitHub Project Planning Assistant"
-      - BIOCHATTER_LIGHT_SUBHEADER="A BioChatter Demonstration App for integrated project planning using LLMs"
+      - BIOCHATTER_LIGHT_TITLE=Project Planner
+      - BIOCHATTER_LIGHT_HEADER=GitHub Project Planning Assistant
+      - BIOCHATTER_LIGHT_SUBHEADER=A BioChatter Demonstration App for integrated project planning using LLMs
       - DOCKER_COMPOSE=true
       - CHAT_TAB=false
       - PROMPT_ENGINEERING_TAB=false
