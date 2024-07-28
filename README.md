@@ -1,78 +1,41 @@
-# Club Scheduling
+# GitHub Project Planning
 
-This repo implements a BioCypher pipeline that grabs all of the repo's issues,
-which are organisational units of individual club meetings, and schedules them
-into the available timeslots. The clubs to be scheduled are represented by
-issues on a GitHub [project
-board](https://github.com/orgs/saezlab/projects/18/views/1), which can also be
-displayed as a [time
-table](https://github.com/orgs/saezlab/projects/18/views/2). Personal schedules
-for the upcoming meetings can be found at the bottom of this README.
+This repo implements a BioCypher pipeline that grabs all issues on a GitHub
+Projects board that simulates a collaborative team (available
+[here](https://github.com/orgs/biocypher/projects/6/views/1)).  The pipeline
+builds a knowledge graph of issues, categories, assigned team members, and
+annotations on the issues, and then provides access to an LLM assistant that
+summarises tasks performed in the previous iteration of the project for the
+group and each individual. Further, the web app provides a planning tab that
+analyses tasks in next iterations of the project and provides suggestions for
+task prioritisation and collaboration, again for the group and each individual.
 
 ## Usage
 
-The workflow in `.github/workflows/calculate_schedule.yaml` is run periodically
-on each Monday evening. It clones the repository, installs the dependencies, and
-runs the `calculate_schedule.py` script, which uses the BioCypher GitHub adapter
-in `scheduling/adapters/adapter.py` to get the data and then computes the
-schedule from the data.
+> [!IMPORTANT]
+> The knowledge graph build stage requires a GitHub token to access the GitHub
+> API, `BIOCYPHER_GITHUB_PROJECT_TOKEN`, in the environment. If you don't have
+> access to this token, the KG build will fail. You can see an online version
+> of the app [here](https://project.biochatter.org).
 
-The pipeline can also be run locally and subsequently updated online by pushing
-the results to the repository. 
+The `docker-compose.yml` file contains the necessary services to run the
+pipeline. To start the pipeline, run:
 
-### Scheduling
+```bash
+git clone https://github.com/biocypher/project-planning.git
+cd project-planning
+docker-compose up -d
+```
 
-The scheduling algorithm is a simple greedy algorithm that iterates through the
-clubs (i.e., the issues) in *random order* and assigns them to the first
-available timeslot, given that all attendants (i.e. assignees) of the club are
-available at that time. If no such timeslot exists, the club is postponed (to
-the `Unscheduled` column) to next week. 
+The pipeline will `build`, `import`, and `deploy` the knowledge graph, and then
+start the `app` service. The KG is available at `http://localhost:7474` and the
+app is available at `http://localhost:8051`.
 
-If the club has been successfully assigned, the corresponding issue is updated
-with the assigned time and moved to the `Scheduled` column. The schedules of
-each person are also appended to the bottom of the README file.
+This standard pipeline runs a non-password-protected Neo4j instance. To run a
+password-protected instance (with ports open to the web), run:
 
-### Preparing for the next week
+```bash
+docker-compose -f docker-compose-password.yml up -d
+```
 
-After the club meetings, cards that were successfully scheduled are
-automatically removed back to the `To be scheduled` column for the next week.
-If a club should not be scheduled for the next week, it can be moved to the
-`Closed / Parked` column.
-
-Assignees should be updated to reflect those that wish to attend the club in the
-following week.
-
-### Parking Clubs
-
-If a club should not be scheduled for the coming week(s), the card can be moved
-to the `Closed / Parked` column. The club will then be ignored by the scheduling
-algorithm.
-
-## Current Schedule
-Last updated: 2023-10-31 12:23:13
-| id                | schedule   |
-|-------------------|------------|
-| saezrodriguez     | []         |
-| slobentanzer      | []         |
-| roramirezf        | []         |
-| martingarridorc   | []         |
-| smuellerd         | []         |
-| jtanevski         | []         |
-| loicchadoutaud    | []         |
-| arezourahimi      | []         |
-| barbarazpc        | []         |
-| demian1           | []         |
-| JanLanzer         | []         |
-| yardenko          | []         |
-| schae211          | []         |
-| LeonieKuechenhoff | []         |
-| MCHeinz           | []         |
-| pablormier        | []         |
-| ivanovaos         | []         |
-| adugourd          | []         |
-| tdrose            | []         |
-| koalive           | []         |
-| miguel13hh        | []         |
-| PauBadiaM         | []         |
-| r-trimbour        | []         |
-| LornaWessels      | []         |
+Authentification settings are configured in the `docker-compose-password.yml`
