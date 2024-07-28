@@ -39,3 +39,15 @@ docker-compose -f docker-compose-password.yml up -d
 ```
 
 Authentification settings are configured in the `docker-compose-password.yml`
+
+## Knowledge Graph
+
+The build procedure is orchestrated by [BioCypher](https://biocypher.org). The
+central script is `create_knowledge_graph.py`, which is responsible for calling
+the adapter to fetch data from the GitHub API and building the KG. You can run
+it locally with:
+
+```bash
+poetry install
+poetry run python create_knowledge_graph.py
+```

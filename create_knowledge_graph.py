@@ -1,5 +1,5 @@
 from biocypher import BioCypher
-from scheduling.adapters.github_adapter import GitHubAdapter
+from project_planning.adapters.github_adapter import GitHubAdapter
 import pandas as pd
 
 pd.set_option("display.max_columns", None)
