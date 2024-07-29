@@ -1,10 +1,9 @@
 [tool.poetry]
-name = "biocypher-project-template"
-version = "0.2.1"
-description = "Template for creating a BioCypher-driven knowledge graph"
+name = "biocypher-project-planning"
+version = "0.3.0"
+description = "BioCypher / BioChatter Project Planning from GitHub"
 authors = [
     "Sebastian Lobentanzer <sebastian.lobentanzer@gmail.com>",
-    "Andreas Maier <andreas.maier-1@uni-hamburg.de>",
 ]
 license = "MIT"
 readme = "README.md"
