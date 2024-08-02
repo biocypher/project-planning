@@ -20,7 +20,14 @@ project:
     priority: str
     iteration: str
     assignees: str[]
-    issue: int
+    issue_number: str
+
+comment:
+  is_a: event
+  represented_as: node
+  input_label: comment
+  properties:
+    text: str
 
 iteration:
   is_a: event
@@ -40,3 +47,12 @@ part of:
   input_label: part of
   source: project
   target: iteration
+
+has comment:
+  is_a: association
+  represented_as: edge
+  input_label: has comment
+  source: project
+  target: comment
+  properties:
+    recency: int

@@ -67,7 +67,7 @@ services:
       - PROMPT_ENGINEERING_TAB=false
       - RAG_TAB=false
       - CORRECTING_AGENT_TAB=false
-      - KNOWLEDGE_GRAPH_TAB=false
+      - KNOWLEDGE_GRAPH_TAB=true
       - LAST_WEEKS_SUMMARY_TAB=true
       - THIS_WEEKS_TASKS_TAB=true
       - TASK_SETTINGS_PANEL_TAB=true

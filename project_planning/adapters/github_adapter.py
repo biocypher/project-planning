@@ -571,7 +571,13 @@ class GitHubAdapter:
                 .get("nodes", [])
             ]
 
-            value["assignees"] = assignees
+            value["Assignees"] = assignees
+
+            # if issue, add IssueNumber
+            if value.get("content").get("number"):
+                value["IssueNumber"] = "project-planning" + str(
+                    value.get("content").get("number")
+                )
 
             # add back to _items
             self._items[key] = value
@@ -598,8 +604,8 @@ class GitHubAdapter:
                         "size": value.get("Size"),
                         "priority": value.get("Priority"),
                         "iteration": value.get("Iteration"),
-                        "assignees": assignees,
-                        "issue": key,
+                        "assignees": value.get("Assignees"),
+                        "issue_number": value.get("IssueNumber"),
                     },
                 )
             )
@@ -630,14 +636,99 @@ class GitHubAdapter:
                     )
                 )
 
+            # Retrieve all comments for the issue
+            comments = self._get_comments(value.get("IssueNumber"))
+
+            if comments:
+                source_id = value["id"]
+                recency = 0
+                for comment in comments:
+                    # add each author / body as an individual node and connect to the project node
+                    comment_id = comment.get("id")
+                    text = (
+                        comment.get("author").get("login") + ": " + comment.get("body")
+                    )
+                    self._nodes.append(
+                        (
+                            comment_id,
+                            "comment",
+                            {"text": text},
+                        )
+                    )
+                    self._edges.append(
+                        (
+                            None,
+                            source_id,
+                            comment_id,
+                            "has comment",
+                            {"recency": recency},
+                        )
+                    )
+                    recency += 1
+
         # Edges to fields
         for key, value in self._items.items():
-            for assignee in value.get("assignees", []):
+            for assignee in value.get("Assignees", []):
                 # check if assignee is in the first element of the list of tuples that is self._nodes
                 if assignee not in [node[0] for node in self._nodes]:
                     self._nodes.append((assignee, "person", {"name": assignee}))
 
                 self._edges.append((None, assignee, value["id"], "leads", {}))
+
+    def _get_comments(self, issue_number, k: int = 10):
+        """
+        Get all comments for a given issue, up to k most recent.
+
+        Args:
+            issue_number: The issue number to get comments for.
+            k: The number of most recent comments to get.
+        """
+        try:
+            number = int(issue_number.split("project-planning")[1])
+        except (IndexError, ValueError):
+            logger.warning(f"Could not extract number from {issue_number}.")
+            return
+
+        query = """
+          query {
+            repository(owner: "biocypher", name: "project-planning") {
+              issue(number: %s) {
+                comments(last: %s) {
+                  nodes {
+                    author {
+                      login
+                    }
+                    id
+                    body
+                  }
+                }
+              }
+            }
+          }
+        """ % (
+            number,
+            k,
+        )
+
+        # Set the request data as a dictionary
+        data = {"query": query}
+
+        # Send the API request
+        response = requests.post(self.url, headers=self.headers, json=data)
+
+        # Parse the response JSON
+        response_json = json.loads(response.text)
+
+        # Extract the data from the response JSON
+        data = (
+            response_json.get("data")
+            .get("repository")
+            .get("issue")
+            .get("comments")
+            .get("nodes")
+        )
+
+        return data
 
     def _get_label(self):
         """
