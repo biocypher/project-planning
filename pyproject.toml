@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "biocypher-project-planning"
-version = "0.3.0"
+version = "0.3.1"
 description = "BioCypher / BioChatter Project Planning from GitHub"
 authors = [
     "Sebastian Lobentanzer <sebastian.lobentanzer@gmail.com>",
