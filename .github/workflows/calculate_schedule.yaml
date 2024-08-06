@@ -1,9 +1,9 @@
 name: Update Schedule
 
 on:
-  schedule:
-    # run tuesday at noon each week
-    - cron: '0 12 * * 2'
+  # schedule:
+  #   # run tuesday at noon each week
+  #   - cron: '0 12 * * 2'
 
 jobs:
   build:
