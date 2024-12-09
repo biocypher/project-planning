@@ -48,7 +48,7 @@ services:
         condition: service_completed_successfully
 
   app:
-    image: biocypher/biochatter-light:0.6.13
+    image: biocypher/biochatter-light:0.8.4
     container_name: app
     ports:
       - "8501:8501"
@@ -67,7 +67,7 @@ services:
       - PROMPT_ENGINEERING_TAB=false
       - RAG_TAB=false
       - CORRECTING_AGENT_TAB=false
-      - KNOWLEDGE_GRAPH_TAB=true
+      - KNOWLEDGE_GRAPH_TAB=false
       - LAST_WEEKS_SUMMARY_TAB=true
       - THIS_WEEKS_TASKS_TAB=true
       - TASK_SETTINGS_PANEL_TAB=true
